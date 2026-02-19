@@ -1,7 +1,7 @@
-#include "queue.h"
+#include "linkedList.h"
 
-void push_back(int data, Queue* ptr) {
-    OBJ* node = calloc(1, sizeof(OBJ));
+void push_back(int data, linkedList* ptr) {
+    Node* node = calloc(1, sizeof(Node));
     node->data = data;
 
     if(ptr->tail == NULL) {
@@ -13,13 +13,13 @@ void push_back(int data, Queue* ptr) {
     }
 }
 
-void pop_back(Queue* ptr) {
+void pop_back(linkedList* ptr) {
     if(ptr->tail && ptr->head == ptr->tail) {
         free(ptr->tail);
         ptr->head = ptr->tail = NULL;
     }
     else if(ptr->tail) {
-        OBJ* temp = ptr->head;
+        Node* temp = ptr->head;
 
         while(temp->next && temp->next != ptr->tail) {
             temp = temp->next;
@@ -32,8 +32,8 @@ void pop_back(Queue* ptr) {
     }
 }
 
-void push_front(int data, Queue* ptr) {
-    OBJ* node = calloc(1, sizeof(OBJ));
+void push_front(int data, linkedList* ptr) {
+    Node* node = calloc(1, sizeof(Node));
     node->data = data;
 
     if(ptr->head == NULL) {
@@ -45,23 +45,23 @@ void push_front(int data, Queue* ptr) {
     }
 }
 
-void pop_front(Queue* ptr) {
+void pop_front(linkedList* ptr) {
     if(ptr->head && ptr->head == ptr->tail) {
         free(ptr->tail);
         ptr->head = ptr->tail = NULL;
     }
     else if(ptr->head) {
-        OBJ* temp = ptr->head;
+        Node* temp = ptr->head;
         ptr->head = ptr->head->next;
         free(temp);
     }
 }
 
-void show(Queue ptr) {
-    OBJ* temp = ptr.head;
+void show(linkedList ptr) {
+    Node* temp = ptr.head;
     int checksum = 0;
     int series = (ptr.head != NULL) ? 1 : 0;
-    printf("Queue: ");
+    printf("linkedList: ");
     while (temp) {
         printf("%d ", temp->data);
 

@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "linkedList.h"
 
 /*
 M – количество операций пересылки.
@@ -25,14 +25,14 @@ i – номер активной очереди
 */
 
 
-void moveNode(Queue* dest, Queue* src, int* M);
-void mergeToQueue(Queue* a, int q, Queue* b, int r, Queue* c, int* C, int* M);
-void mergeSort(Queue* lst, int* C, int* M);
-int countSeries(Queue* q);    
+void moveNode(linkedList* dest, linkedList* src, int* M);
+void mergeToQueue(linkedList* a, int q, linkedList* b, int r, linkedList* c, int* C, int* M);
+void mergeSort(linkedList* lst, int* C, int* M);
+int countSeries(linkedList* q);    
 
 int main(void) {
 
-    Queue lst = {0};
+    linkedList lst = {0};
 
     push_back(5, &lst);
     push_back(2, &lst);
@@ -44,12 +44,27 @@ int main(void) {
     push_back(8, &lst);
     push_back(66, &lst);
     push_back(45, &lst);
+    push_back(-1253, &lst);
+    push_back(-1233, &lst);
+    push_back(-1223, &lst);
+    push_back(-1233, &lst);
+    push_back(-123, &lst);
+    push_back(-1235, &lst);
+    push_back(-123, &lst);
+    push_back(-12535, &lst);
+    push_back(-1234, &lst);
+    push_back(-123, &lst);
+    push_back(-123123, &lst);
+    push_back(-123213, &lst);
+    push_back(-1253, &lst);
+    push_back(-1253, &lst);
+    push_back(-1243, &lst);
     push_back(-123, &lst);
     
     int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
     
     // КР до
-    OBJ* temp = lst.head;
+    Node* temp = lst.head;
     while (temp) {
         before_checksum += temp->data;
         temp = temp->next;
@@ -72,7 +87,7 @@ int main(void) {
 
 
     printf("*** mergeSort ***\nОтсортированная последовательность: ");
-    for (OBJ* node = lst.head; node; node = node->next) {
+    for (Node* node = lst.head; node; node = node->next) {
         printf("%d ", node->data);
     }
 
@@ -88,10 +103,10 @@ int main(void) {
 
 
 
-void moveNode(Queue* dest, Queue* src, int* M) {
+void moveNode(linkedList* dest, linkedList* src, int* M) {
     if (src->head == NULL) return;
 
-    OBJ* node = src->head;
+    Node* node = src->head;
     src->head = node->next;
     if (src->head == NULL) src->tail = NULL;
 
@@ -107,10 +122,10 @@ void moveNode(Queue* dest, Queue* src, int* M) {
     *M += 3;
 }
 
-int countSeries(Queue* q) {
+int countSeries(linkedList* q) {
     if (q->head == NULL) return 0;
     int s = 1;
-    OBJ* curr = q->head;
+    Node* curr = q->head;
     while (curr->next != NULL) {
         if (curr->data > curr->next->data) {
             s++;
@@ -120,7 +135,7 @@ int countSeries(Queue* q) {
     return s;
 }
 
-void mergeToQueue(Queue* a, int q, Queue* b, int r, Queue* c, int* C, int* M) {
+void mergeToQueue(linkedList* a, int q, linkedList* b, int r, linkedList* c, int* C, int* M) {
     while(q != 0 && r != 0) {
         (*C)++;
         if(a->head->data <= b->head->data) {
@@ -143,14 +158,14 @@ void mergeToQueue(Queue* a, int q, Queue* b, int r, Queue* c, int* C, int* M) {
     }
 }
 
-void mergeSort(Queue* lst, int* C, int* M) {
-    Queue a = {lst->head, NULL};
-    Queue b = {lst->head->next, NULL};
+void mergeSort(linkedList* lst, int* C, int* M) {
+    linkedList a = {lst->head, NULL};
+    linkedList b = {lst->head->next, NULL};
 
     size_t n = 1;
 
-    OBJ* k = a.head;
-    OBJ* p = b.head;
+    Node* k = a.head;
+    Node* p = b.head;
 
     while(p != NULL) {
         n++;
@@ -165,10 +180,10 @@ void mergeSort(Queue* lst, int* C, int* M) {
 
     int count_series = 1;
     
-    Queue c[2];
+    linkedList c[2];
     while(count_series < n) {
-        c[0] = (Queue) {NULL};
-        c[1] = (Queue) {NULL};
+        c[0] = (linkedList) {NULL};
+        c[1] = (linkedList) {NULL};
 
         int i = 0, m = n;
 

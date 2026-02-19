@@ -7,4 +7,4 @@ regex:
 	./regexSort
 
 clean:
-	find . -type f ! -name "*.c" ! -name "*.h" ! -name "Makefile" -delete
+	find . -type f ! -name "*.c" ! -name "*.h" ! -name "*.txt" ! -name "Makefile" -delete
