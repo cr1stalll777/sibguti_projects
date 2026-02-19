@@ -1,10 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-/*
-M – количество операций пересылки.
-C– количество операций сравнения
-*/
 
 #include <stdio.h>
 #include <stdlib.h>

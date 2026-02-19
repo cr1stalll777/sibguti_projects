@@ -70,28 +70,26 @@ int main(void) {
     int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
     
 
-    // КР до
     for(size_t i = 0; i < length; ++i) {
         before_checksum += arr[i];
     }
 
-    // к-во серий ДО
+
     for (size_t i = 0; i < length - 1; i++) {
         if(arr[i] > arr[i + 1]) {
             before_series++;
         }
     }
     
-    /*ТУТ АЛГОРИТМ*/
+
     heap_sort(arr, length, &C, &M);
 
     
-    // КР после
+
     for(size_t i = 0; i < length; ++i) {
         after_checksum += arr[i];
     }
 
-    // К-во серий ПОСЛЕ
     for (size_t i = 0; i < length - 1; i++) {
         if(arr[i] > arr[i + 1]) {
             after_series++;

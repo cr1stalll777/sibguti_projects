@@ -15,7 +15,7 @@ int arr[] = {5, 2, 4, 6, 1, 3};
 
 
 void quick_sort(int arr[], int left, int right, int* C, int* M) {
-    //int arr[] = {5, 2, 4, 6, 1, 3};
+
     if (left >= right) return;
 
     int pivot = arr[(left + right) / 2];
@@ -35,7 +35,6 @@ void quick_sort(int arr[], int left, int right, int* C, int* M) {
         }
 
         if (i <= j) {
-            // Обмен (3 пересылки)
             int temp = arr[i];
             arr[i] = arr[j];
             arr[j] = temp;
@@ -63,27 +62,25 @@ int main(void) {
     int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
     
 
-    // КР до
     for(size_t i = 0; i < length; ++i) {
         before_checksum += arr[i];
     }
 
-    // к-во серий ДО
+
     for (size_t i = 0; i < length - 1; i++) {
         if(arr[i] > arr[i + 1]) {
             before_series++;
         }
     }
     
-    /*ТУТ АЛГОРИТМ*/
     quick_sort(arr, 0, length - 1, &C, &M);
     
-    // КР после
+
     for(size_t i = 0; i < length; ++i) {
         after_checksum += arr[i];
     }
 
-    // К-во серий ПОСЛЕ
+
     for (size_t i = 0; i < length - 1; i++) {
         if(arr[i] > arr[i + 1]) {
             after_series++;
