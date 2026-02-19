@@ -1,81 +1,80 @@
-/*
-M – количество операций пересылки.
-C– количество операций сравнения
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-int main(void) {
+int getChecksum(int *arr, int n);
+int getSeries(int *arr, int n);
+void insertionSort(int *arr, int n, int *C, int *M);
 
-    int arr[200];
-    size_t length = sizeof(arr) / sizeof(*arr);
+
+int main() {
     srand(time(NULL));
+    int sizes[] = {10, 50, 100, 200};
+    int n_count = sizeof(sizes) / sizeof(sizes[0]);
 
-    for (int i = 0; i < length; i++) {
-        arr[i] = rand() % 201 - 100;
+    printf("Результаты для метода: Сортировка вставками (InsertionSort)\n");
+    printf("+-----+---------------------------+---------------------------+\n");
+    printf("|  n  | Упорядоченный массив      | Случайный массив          |\n");
+    printf("|     |    M          C           |    M          C           |\n");
+    printf("+-----+---------------------------+---------------------------+\n");
+
+    for (int i = 0; i < n_count; i++) {
+        int n = sizes[i];
+        int *arr_ord = malloc(n * sizeof(int));
+        int *arr_rand = malloc(n * sizeof(int));
+        int C_ord, M_ord, C_rand, M_rand;
+
+        // Упорядоченный массив
+        for (int j = 0; j < n; j++) arr_ord[j] = j;
+        insertionSort(arr_ord, n, &C_ord, &M_ord);
+
+        // Случайный массив
+        for (int j = 0; j < n; j++) arr_rand[j] = rand() % 1000 - 500;
+        insertionSort(arr_rand, n, &C_rand, &M_rand);
+
+        printf("| %3d | %-10d %-10d     | %-10d %-10d     |\n", 
+               n, M_ord, C_ord, M_rand, C_rand);
+
+        free(arr_ord);
+        free(arr_rand);
     }
+    printf("+-----+---------------------------+---------------------------+\n");
 
+    return 0;
+}
 
-    int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
-
-    for(size_t i = 0; i < length; ++i) {
-        before_checksum += arr[i];
-    }
-
-    for (size_t i = 0; i < length - 1; i++) {
-        if(arr[i] > arr[i + 1]) {
-            before_series++;
-        }
-    }
-    
-    for (size_t i = 1; i < length; i++)
-    //[5, 2, 4, 6, 1, 3]
-
-    //[1 2 3 4 5 6]
-    {
-        int temp = arr[i]; // 3 // i = 5
-        M++;
-
-        int j = i - 1; // 6 // j = 4
+void insertionSort(int *arr, int n, int *C, int *M) {
+    *C = 0; *M = 0;
+    for (int i = 1; i < n; i++) {
+        int temp = arr[i];
+        (*M)++;
+        int j = i - 1;
         while (j >= 0) {
-            C++;
-            if(temp < arr[j]) {
-                arr[j + 1] = arr[j]; // 2 = 5
-                M++;
+            (*C)++;
+            if (temp < arr[j]) {
+                arr[j + 1] = arr[j];
+                (*M)++;
                 j--;
-            }
-            else {
+            } else {
                 break;
             }
         }
-        
         arr[j + 1] = temp;
-        M++;
+        (*M)++;
     }
-    
-    for(size_t i = 0; i < length; ++i) {
-        after_checksum += arr[i];
-    }
+}
 
-    for (size_t i = 0; i < length - 1; i++) {
-        if(arr[i] > arr[i + 1]) {
-            after_series++;
-        }
-    }
+int getChecksum(int *arr, int n) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) sum += arr[i];
+    return sum;
+}
 
-    printf("*** instertionSort ***\nОтсортированный массив: ");
-    for (size_t i = 0; i < length; i++) {
-        printf("%d ", arr[i]);
+int getSeries(int *arr, int n) {
+    if (n <= 0) return 0;
+    int series = 1;
+    for (int i = 0; i < n - 1; i++) {
+        if (arr[i] > arr[i + 1]) series++;
     }
-
-    putchar('\n');
-    
-    printf("C = %d\nM = %d\nКонтрольная сумма ДО: %d\nКонтрольная сумма ПОСЛЕ: %d\n", C, M, before_checksum, after_checksum);
-    printf("К-во серий ДО: %d\nК-во серий ПОСЛЕ: %d\n", before_series, after_series);
-    
-    
-    return 0;
+    return series;
 }

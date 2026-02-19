@@ -12,7 +12,49 @@ int arr[] = {5, 2, 4, 6, 1, 3};
 #include <stdlib.h>
 #include <time.h>
 
-void sift_down(int arr[], int n, int i, int* C, int* M) {
+int getChecksum(int *arr, int n);
+int getSeries(int *arr, int n);
+void siftDown(int arr[], int n, int i, int* C, int* M);
+void heapSort(int arr[], int n, int* C, int* M);
+
+
+int main() {
+    srand(time(NULL));
+    int sizes[] = {10, 50, 100, 200};
+    int n_count = sizeof(sizes) / sizeof(sizes[0]);
+
+    printf("Результаты для метода: Пирамидальная сортировка (HeapSort)\n");
+    printf("+-----+---------------------------+---------------------------+\n");
+    printf("|  n  | Упорядоченный массив      | Случайный массив          |\n");
+    printf("|     |    M          C           |    M          C           |\n");
+    printf("+-----+---------------------------+---------------------------+\n");
+
+    for (int i = 0; i < n_count; i++) {
+        int n = sizes[i];
+        int *arr_ord = malloc(n * sizeof(int));
+        int *arr_rand = malloc(n * sizeof(int));
+        int C_ord, M_ord, C_rand, M_rand;
+
+        // Заполнение упорядоченного массива
+        for (int j = 0; j < n; j++) arr_ord[j] = j;
+        heapSort(arr_ord, n, &C_ord, &M_ord);
+
+        // Заполнение случайного массива
+        for (int j = 0; j < n; j++) arr_rand[j] = rand() % 1000 - 500;
+        heapSort(arr_rand, n, &C_rand, &M_rand);
+
+        printf("| %3d | %-10d %-10d     | %-10d %-10d     |\n", 
+               n, M_ord, C_ord, M_rand, C_rand);
+
+        free(arr_ord);
+        free(arr_rand);
+    }
+    printf("+-----+---------------------------+---------------------------+\n");
+
+    return 0;
+}
+
+void siftDown(int arr[], int n, int i, int* C, int* M) {
     int largest = i;
 
     int l = 2*i + 1;
@@ -35,13 +77,13 @@ void sift_down(int arr[], int n, int i, int* C, int* M) {
         arr[i] = arr[largest];
         arr[largest] = temp;
         (*M)+=3;
-        sift_down(arr, n, largest, C, M);
+        siftDown(arr, n, largest, C, M);
     }
 }
 
-void heap_sort(int arr[], int n, int* C, int* M) {
+void heapSort(int arr[], int n, int* C, int* M) {
     for (int i = n / 2 - 1; i >= 0; i--) {
-        sift_down(arr, n, i, C,M);
+        siftDown(arr, n, i, C,M);
     }
 
     for (int i = n - 1; i > 0; i--) {
@@ -49,63 +91,21 @@ void heap_sort(int arr[], int n, int* C, int* M) {
         arr[0] = arr[i];
         arr[i] = temp;
         (*M)+=3;
-        sift_down(arr, i, 0, C, M);
+        siftDown(arr, i, 0, C, M);
     }
-    
-    
 }
 
+int getChecksum(int *arr, int n) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) sum += arr[i];
+    return sum;
+}
 
-
-int main(void) {
-
-    int arr[200];
-    size_t length = sizeof(arr) / sizeof(*arr);
-    srand(time(NULL));
-
-    for (int i = 0; i < length; i++) {
-        arr[i] = rand() % 201 - 100;
+int getSeries(int *arr, int n) {
+    if (n <= 0) return 0;
+    int series = 1;
+    for (int i = 0; i < n - 1; i++) {
+        if (arr[i] > arr[i + 1]) series++;
     }
-      
-    int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
-    
-
-    for(size_t i = 0; i < length; ++i) {
-        before_checksum += arr[i];
-    }
-
-
-    for (size_t i = 0; i < length - 1; i++) {
-        if(arr[i] > arr[i + 1]) {
-            before_series++;
-        }
-    }
-    
-
-    heap_sort(arr, length, &C, &M);
-
-    
-
-    for(size_t i = 0; i < length; ++i) {
-        after_checksum += arr[i];
-    }
-
-    for (size_t i = 0; i < length - 1; i++) {
-        if(arr[i] > arr[i + 1]) {
-            after_series++;
-        }
-    }
-
-    printf("*** heapSort ***\nОтсортированный массив: ");
-    for (size_t i = 0; i < length; i++) {
-        printf("%d ", arr[i]);
-    }
-
-    putchar('\n');
-    
-    printf("C = %d\nM = %d\nКонтрольная сумма ДО: %d\nКонтрольная сумма ПОСЛЕ: %d\n", C, M, before_checksum, after_checksum);
-    printf("К-во серий ДО: %d\nК-во серий ПОСЛЕ: %d\n", before_series, after_series);
-    
-    
-    return 0;
+    return series;
 }
