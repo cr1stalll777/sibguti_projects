@@ -24,80 +24,61 @@ i – номер активной очереди
 
 */
 
-
+int getChecksum(linkedList* lst);
+int countSeries(linkedList* q);    
 void moveNode(linkedList* dest, linkedList* src, int* M);
 void mergeToQueue(linkedList* a, int q, linkedList* b, int r, linkedList* c, int* C, int* M);
 void mergeSort(linkedList* lst, int* C, int* M);
-int countSeries(linkedList* q);    
 
 int main(void) {
+    srand(time(NULL));
+    int sizes[] = {10, 50, 100, 200};
+    int n_count = sizeof(sizes) / sizeof(sizes[0]);
 
-    linkedList lst = {0};
+    printf("Результаты для метода: Сортировка слиянием (MergeSort)\n");
+    printf("+-----+---------------------------+---------------------------+\n");
+    printf("|  n  | Упорядоченный список      | Случайный список          |\n");
+    printf("|     |    M          C           |    M          C           |\n");
+    printf("+-----+---------------------------+---------------------------+\n");
 
-    push_back(5, &lst);
-    push_back(2, &lst);
-    push_back(4, &lst);
-    push_back(6, &lst);
-    push_back(1, &lst);
-    push_back(3, &lst);
-    push_back(87, &lst);
-    push_back(8, &lst);
-    push_back(66, &lst);
-    push_back(45, &lst);
-    push_back(-1253, &lst);
-    push_back(-1233, &lst);
-    push_back(-1223, &lst);
-    push_back(-1233, &lst);
-    push_back(-123, &lst);
-    push_back(-1235, &lst);
-    push_back(-123, &lst);
-    push_back(-12535, &lst);
-    push_back(-1234, &lst);
-    push_back(-123, &lst);
-    push_back(-123123, &lst);
-    push_back(-123213, &lst);
-    push_back(-1253, &lst);
-    push_back(-1253, &lst);
-    push_back(-1243, &lst);
-    push_back(-123, &lst);
-    
-    int C = 0, M = 0, before_checksum = 0, after_checksum = 0, before_series = 1, after_series = 1;
-    
-    // КР до
-    Node* temp = lst.head;
-    while (temp) {
-        before_checksum += temp->data;
-        temp = temp->next;
+    for (int k = 0; k < n_count; k++) {
+        int n = sizes[k];
+        linkedList l_ord = {NULL, NULL}, l_rand = {NULL, NULL};
+        int C_ord = 0, M_ord = 0, C_rand = 0, M_rand = 0;
+
+        for (int i = 0; i < n; i++) {
+            push_back(i, &l_ord);
+
+            Node* rnd = malloc(sizeof(Node)); 
+            rnd->data = rand() % 1000 - 500; 
+            rnd->next = NULL;
+            if(!l_rand.head) {
+                l_rand.head = l_rand.tail = rnd; 
+            }
+            else {
+                l_rand.tail->next = rnd; l_rand.tail = rnd; 
+            }
+        }
+
+        mergeSort(&l_ord, &C_ord, &M_ord);
+        mergeSort(&l_rand, &C_rand, &M_rand);
+
+        printf("| %3d | %-10d %-10d     | %-10d %-10d     |\n", n, M_ord, C_ord, M_rand, C_rand);
+
+        while(l_ord.head) {
+            Node* t = l_ord.head; 
+            l_ord.head = l_ord.head->next; 
+            free(t);
+        }
+
+        while(l_rand.head) {
+            Node* t = l_rand.head;
+            l_rand.head = l_rand.head->next;
+            free(t);
+        }
+
     }
-    
-    before_series = countSeries(&lst);
-    
-    /*ТУТ АЛГОРИТМ*/
-    mergeSort(&lst, &C, &M);
-    
-    
-    // КР после
-    temp = lst.head;
-    while (temp) {
-        after_checksum += temp->data;
-        temp = temp->next;
-    }
-
-    after_series = countSeries(&lst);
-
-
-    printf("*** mergeSort ***\nОтсортированная последовательность: ");
-    for (Node* node = lst.head; node; node = node->next) {
-        printf("%d ", node->data);
-    }
-
-    printf("\nHEAD: %d\n", lst.head->data);
-    printf("TAIL: %d\n", lst.tail->data);
-    
-    printf("C = %d\nM = %d\nКонтрольная сумма ДО: %d\nКонтрольная сумма ПОСЛЕ: %d\n", C, M, before_checksum, after_checksum);
-    printf("К-во серий ДО: %d\nК-во серий ПОСЛЕ: %d\n", before_series, after_series);
-    
-    
+    printf("+-----+---------------------------+---------------------------+\n");
     return 0;
 }
 

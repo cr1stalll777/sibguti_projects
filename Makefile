@@ -1,9 +1,9 @@
 merge:
-	gcc "./Part 4/queue_func.c" "./Part 4/mergeSort.c" -o mergeSort
+	gcc "./Part 4/linkedList_func.c" "./Part 4/mergeSort.c" -o mergeSort
 	./mergeSort
 
 radix:
-	gcc "./Part 4/queue_func.c" "./Part 4/radixSort.c" -o radixSort
+	gcc "./Part 4/linkedList_func.c" "./Part 4/radixSort.c" -o radixSort
 	./radixSort
 
 clean:
